@@ -5,7 +5,7 @@ student :
 
 resources:
   images:
-    path: "/app/external/"
+    path: "/app/external"
 
 spring :
   resources:
