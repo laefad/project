@@ -1,0 +1,14 @@
+.orderHeader {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.orderHeader > * {
+    margin: 3px;
+}
+
+.removeOrder:hover {
+    background-color: red;
+}

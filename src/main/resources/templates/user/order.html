@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title th:text='${"Заказ: " + order.getOrderName()}'></title>
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    <link rel="stylesheet" type="text/css" href="/css/order.css">
+</head>
+<body>
+<nav>
+    <a href="/">Главная</a>
+    <a href="/stock">Магазины</a>
+    <a href="/item">Товары</a>
+
+    <div th:if="${user != null}">
+        <a href="/user/">Заказы</a>
+        <a href="/logout">Выйти</a>
+    </div>
+
+    <div th:if="${user == null}">
+        <a href="/login">Войти</a>
+        <a href="/registration">Регистрация</a>
+    </div>
+</nav>
+
+<div class="orderHeader">
+    <p>Заказ №<span th:text="${order.getId()}"></span></p>
+    <hr color="black" width="50%" size="1" >
+    <p th:text="${order.getOrderName()}"></p>
+    <p th:text="${order.getOrderStatus()}"></p>
+</div>
+
+<form method="post"
+      action="/order/rename"
+      th:if='${!user.getRole().equals("ADMIN")}'>
+    <input type="hidden"
+           name="id"
+           readonly
+           th:value="${order.getId()}">
+
+    <input type="text"
+           name="orderName"
+           th:value="${order.getOrderName()}"
+           placeholder="Имя заказа">
+
+    <button type="submit">Переименовать заказ</button>
+</form>
+
+<form method="post"
+      action="/order/delete"
+      th:if='${!user.getRole().equals("ADMIN")}'>
+    <input type="hidden"
+           name="id"
+           readonly
+           th:value="${order.getId()}">
+    <button class="removeOrder" type="submit">Удалить заказ</button>
+</form>
+
+<p th:if="${order.getItems().isEmpty()}">
+    Заказ пуст
+</p>
+
+<table th:if="${!order.getItems().isEmpty()}">
+    <tr>
+        <th>Наименование</th>
+        <th>Цена</th>
+        <th>Количество</th>
+        <th>Магазин</th>
+        <th th:if='${(order.getOrderStatus().equals("EMPTY") ||
+                     order.getOrderStatus().equals("ORDERING")) &&
+                     !user.getRole().equals("ADMIN")}'>
+            Изменить количество
+        </th>
+    </tr>
+    <tr th:each="instance : ${order.getItems()} ">
+        <td th:text="${instance.key.getItem().getName()}"></td>
+        <td th:text="${instance.key.getItem().getPrice()}"></td>
+        <td th:text="${instance.value}"></td>
+        <td th:text="${instance.key.getStock().getId() + ' ' + instance.key.getStock().getName()}"></td>
+        <td th:if='${(order.getOrderStatus().equals("EMPTY") ||
+                     order.getOrderStatus().equals("ORDERING")) &&
+                     !user.getRole().equals("ADMIN")}'>
+            <form method="post"
+                  action="/order/change"
+                  >
+                <input type="hidden"
+                       name="order_id"
+                       readonly
+                       th:value="${order.getId()}">
+                <input type="hidden"
+                       name="item_id"
+                       readonly
+                       th:value="${instance.key.getItem().getId()}">
+                <input type="hidden"
+                       name="stock_id"
+                       readonly
+                       th:value="${instance.key.getStock().getId()}">
+                <input type="number"
+                       step="1"
+                       name="amount"
+                       placeholder="Количество">
+                <button type="submit">Изменить</button>
+            </form>
+        </td>
+    </tr>
+</table>
+
+<form method="post"
+      action="/order/send"
+      th:if='${order.getOrderStatus().equals("ORDERING") &&
+               !user.getRole().equals("ADMIN")}'>
+    <input type="hidden"
+           name="id"
+           readonly
+           th:value="${order.getId()}">
+    <button type="submit">Отправить заказ</button>
+</form>
+
+<form method="post"
+      action="/order/takeBack"
+      th:if='${order.getOrderStatus().equals("PROCESSING") &&
+               !user.getRole().equals("ADMIN")}'>
+    <input type="hidden"
+           name="id"
+           readonly
+           th:value="${order.getId()}">
+    <button type="submit">Отменить отправленный заказ</button>
+</form>
+
+<form method="post"
+      action="/order/accept"
+      th:if='${user.getRole().equals("ADMIN")}'>
+    <input type="hidden"
+           name="id"
+           readonly
+           th:value="${order.getId()}">
+    <button type="submit">Принять заказ</button>
+</form>
+
+</body>
+</html>

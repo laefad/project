@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text='${"Страница пользователя " + user.getLogin()}'></title>
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    <link rel="stylesheet" type="text/css" href="/css/user.css">
+    <script type="text/javascript" src="/js/user.js"></script>
+</head>
+<body>
+<nav>
+    <a href="/">Главная</a>
+    <a href="/stock">Магазины</a>
+    <a href="/item">Товары</a>
+
+    <div th:if="${user != null}">
+        <a href="/user/">Заказы</a>
+        <a href="/logout">Выйти</a>
+    </div>
+
+    <div th:if="${user == null}">
+        <a href="/login">Войти</a>
+        <a href="/registration">Регистрация</a>
+    </div>
+</nav>
+<div id="user">
+    <div id="data">
+        <p>Пользователь</p>
+        <p th:text="${user.getLogin()}"></p>
+        <p>Почта</p>
+        <p th:text="${user.getMailAddress()}"></p>
+        <p>Роль</p>
+        <p th:text="${user.getRole()}"></p>
+    </div>
+
+    <div th:if='${user.getRole().equals("ADMIN")}'
+         id="orders">
+        <div id="ordersList">
+
+            <div class="order"
+                 th:each="order : ${orders}"
+                 th:if="${!orders.isEmpty()}">
+
+                <div class="orderHeader">
+                    <p>Заказ №<span th:text="${order.getId()}"></span></p>
+                    <hr color="black" width="50%" size="1" >
+                    <p th:text="${order.getOrderName()}"></p>
+                    <p th:text="${order.getOrderStatus()}"></p>
+                </div>
+
+                <div class="orderActivities">
+
+                    <div class="activity">
+                        <form class="activityForm"
+                              method="get"
+                              action="/order/">
+                            <input type="hidden"
+                                   name="id"
+                                   readonly
+                                   th:value="${order.getId()}">
+
+                            <button type="submit">Просмотр заказа</button>
+                        </form>
+                    </div>
+
+                    <div class="activity">
+                        <form class="activityForm"
+                              method="post"
+                              action="/order/accept">
+                            <input type="hidden"
+                                   name="id"
+                                   readonly
+                                   th:value="${order.getId()}">
+
+                            <button type="submit">Принять заказ</button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if='${user.getRole().equals("USER")}'
+         id="orders">
+
+        <form id="createOrder"
+              method="post"
+              action="/order/create">
+            <input type="text"
+                   name="orderName"
+                   required
+                   placeholder="Имя заказа">
+            <button id="addButton" type="submit">Добавить заказ</button>
+        </form>
+
+        <h3>Заказы</h3>
+
+        <p th:if="${user.getOrders().isEmpty()}">Заказов нет</p>
+
+        <div id="ordersList">
+
+            <div class="order"
+                 th:each="order : ${user.getOrders()}"
+                 th:if="${!user.getOrders().isEmpty()}">
+
+                <div class="orderHeader">
+                    <p>Заказ №<span th:text="${order.getId()}"></span></p>
+                    <hr color="black" width="50%" size="1" >
+                    <p th:text="${order.getOrderName()}"></p>
+                    <p th:text="${order.getOrderStatus()}"></p>
+                </div>
+
+                <div class="orderActivities">
+
+                <div class="activity">
+                    <form class="activityForm"
+                          method="get"
+                          action="/order/">
+                        <input type="hidden"
+                               name="id"
+                               readonly
+                               th:value="${order.getId()}">
+
+                        <button type="submit">Просмотр заказа</button>
+                    </form>
+                </div>
+
+                <div class="activity">
+                    <form class="activityForm"
+                          method="post"
+                          action="/order/delete">
+                        <input type="hidden"
+                               name="id"
+                               readonly
+                               th:value="${order.getId()}">
+
+                        <button type="submit"
+                                class="removeOrder"
+                        >Удалить заказ</button>
+                    </form>
+                </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+</body>
+</html>

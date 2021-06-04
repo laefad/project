@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title th:text='${stock.getName()}'></title>
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    <link rel="stylesheet" type="text/css" href="/css/item.css">
+</head>
+<body>
+<nav>
+    <a href="/">Главная</a>
+    <a href="/stock">Магазины</a>
+    <a href="/item">Товары</a>
+
+    <div th:if="${user != null}">
+        <a href="/user/">Заказы</a>
+        <a href="/logout">Выйти</a>
+    </div>
+
+    <div th:if="${user == null}">
+        <a href="/login">Войти</a>
+        <a href="/registration">Регистрация</a>
+    </div>
+</nav>
+
+<div>
+    <p>Магазин
+        <span th:text="${stock.getId()}"></span>
+    </p>
+</div>
+
+<p th:if="${stock.getItems().isEmpty()}">
+    Магазин пуст
+</p>
+
+<div id="container"
+     th:if="${user == null}">
+    <p>
+        Создание и добавление в заказы доступно только зарегистрированным пользователям.
+    </p>
+    <div>
+        <a href="/registration">Регистрация</a>
+        <a href="/login">Войти</a>
+    </div>
+</div>
+
+<div th:each="instance : ${stock.getItems()}"
+     th:if="${!stock.getItems().isEmpty()}"
+     class="item">
+
+    <div class="itemLeft">
+        <img th:src="${instance.key.getPathToImage()}"/>
+    </div>
+
+    <div class="itemRight">
+
+    <p>Название:
+        <span th:text="${instance.key.getName()}"></span>
+    </p>
+
+    <p>Цена:
+        <span th:text="${instance.key.getPrice()}"></span>
+    </p>
+
+    <p>Количество:
+        <span th:text="${instance.value}"></span>
+    </p>
+
+    <form method="get"
+          action="/item/get">
+        <input type="hidden"
+               name="id"
+               readonly
+               th:value="${instance.key.getId()}">
+
+        <button type="submit">Просмотр товара</button>
+    </form>
+
+    <form method="post"
+          action="/order/change"
+          th:if='${user != null && !user.getRole().equals("ADMIN")}'>
+        <input type="hidden"
+               name="item_id"
+               readonly
+               th:value="${instance.key.getId()}">
+        <input type="hidden"
+               name="stock_id"
+               readonly
+               th:value="${stock.getId()}">
+        <input type="number"
+               name="amount"
+               max="instance.value"
+               step="1"
+               placeholder="Количество">
+        <input type="number"
+               name="order_id"
+               list="orders"
+               placeholder="id Заказа">
+        <datalist id="orders">
+            <option th:each="order : ${user.getOrders()}"
+                    th:value='${order.getId()}'
+                    th:text='${order.getOrderName()}'
+                    th:if='${order.getOrderStatus().equals("EMPTY") || order.getOrderStatus().equals("ORDERING")}'></option>
+        </datalist>
+        <button type="submit">Добавить в заказ</button>
+    </form>
+
+    <form method="post"
+          action="/stock/change"
+          th:if='${user != null && user.getRole().equals("ADMIN")}'>
+        <input type="hidden"
+               name="item_id"
+               readonly
+               th:value="${instance.key.getId()}">
+        <input type="hidden"
+               name="stock_id"
+               readonly
+               th:value="${stock.getId()}">
+        <input type="number"
+               name="amount"
+               max="instance.value"
+               step="1"
+               placeholder="Количество">
+        <button type="submit">Изменить количество</button>
+    </form>
+    </div>
+</div>
+
+</body>
+</html>

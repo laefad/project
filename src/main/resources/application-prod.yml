@@ -1,0 +1,50 @@
+student :
+  name : Fedor
+  last_name : Daragan
+  group : IKBO10-19
+
+resources:
+  images:
+    path: "/app/external/"
+
+spring :
+  resources:
+    static-locations:
+    - "classpath:/static/"
+    - "file:/app/external/"
+  datasource :
+    url : jdbc:postgresql://localhost:7000/postgres
+    username : java
+    password : java
+    driver-class-name : org.postgresql.Driver
+
+  jpa :
+    hibernate:
+      ddl-auto: create-drop
+
+    database : postgresql
+    database-platform : org.hibernate.dialect.PostgreSQL10Dialect
+    properties:
+        javax:
+          persistence:
+            schema-generation:
+              create-source: metadata
+              scripts:
+                action: create
+                create-target: create.sql
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          ssl:
+            trust: smtp.gmail.com
+    username: 123@gmail.com
+    password: 123
+
+destination: 123@gmail.com

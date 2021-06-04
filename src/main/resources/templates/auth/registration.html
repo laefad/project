@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Регистрация</title>
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+</head>
+<body>
+<nav>
+    <a href="/">Главная</a>
+    <a href="/stock">Магазины</a>
+    <a href="/item">Товары</a>
+
+    <div th:if="${user != null}">
+        <a href="/user/">Заказы</a>
+        <a href="/logout">Выйти</a>
+    </div>
+
+    <div th:if="${user == null}">
+        <a href="/login">Войти</a>
+        <a href="/registration">Регистрация</a>
+    </div>
+</nav>
+
+<form action="/addUser" method="POST">
+    <h3>Регистрация</h3>
+    <input type="text" name="login" placeholder="Логин"/>
+    <input type="text" name="mail" placeholder="Почта (необязательно)"/>
+    <input type="password" name="password" placeholder="Пароль" />
+    <button type="submit">Зарегистрироваться</button>
+    <p th:if="${error}" class="error">Пользователь с таким логином уже существует</p>
+</form>
+
+</body>
+</html>
