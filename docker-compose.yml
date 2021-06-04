@@ -12,8 +12,8 @@ services:
     depends_on:
       - postgres
     volumes:
-      - type: bind
-        source: ./external
+      - type: volume
+        source: app-external
         target: /app/external
 
   postgres:
@@ -30,6 +30,26 @@ services:
       PGPASSWORD: 1561
       POSTGRES_PASSWORD: 1561
 
+  pgAdmin:
+    container_name: app_pgAdmin
+    image: dpage/pgadmin4
+    links:
+      - postgres
+    ports:
+      - 5050:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.admin
+      PGADMIN_DEFAULT_PASSWORD: 1561
+      PGADMIN_LISTEN_PORT: 80
+    volumes:
+      - type: volume
+        source: pg-admin
+        target: /var/lib/pgadmin
+
 volumes:
   db-source:
-    external: true
+    name: db-source
+  pg-admin:
+    name: pg-admin
+  app-external:
+    name: app-external

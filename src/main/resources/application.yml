@@ -24,14 +24,6 @@ spring :
 
     database : postgresql
     database-platform : org.hibernate.dialect.PostgreSQL10Dialect
-    properties:
-        javax:
-          persistence:
-            schema-generation:
-              create-source: metadata
-              scripts:
-                action: create
-                create-target: create.sql
 
   mail:
     host: smtp.gmail.com

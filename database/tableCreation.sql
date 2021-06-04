@@ -170,4 +170,7 @@ CREATE TABLE public.users_orders
 ALTER TABLE public.users_orders
     OWNER to postgres;
 
-INSERT INTO public.users (login, mail_address, password, role) VALUES ('admin', null, 'admin', 'ADMIN')
+
+-- admin == $2a$10$Vs8Ouob4bkIg.yDa7Yf7yudy1DXWNYweTn1e/JjXKGDnZvl3XATeS
+INSERT INTO public.users (login, mail_address, password, role)
+    VALUES ('admin', null, '$2a$10$Vs8Ouob4bkIg.yDa7Yf7yudy1DXWNYweTn1e/JjXKGDnZvl3XATeS', 'ADMIN');
