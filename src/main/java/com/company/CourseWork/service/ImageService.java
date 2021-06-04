@@ -14,8 +14,21 @@ public class ImageService {
     @Value("${resources.images.path}")
     private String path;
 
+    public void createDir() throws IOException {
+        File file = new File(path + File.separator + "images");
+        if (!file.exists())
+            file.mkdir();
+    }
+
     public File getFile(String subpath) {
         File file = new File(path + File.separator + subpath);
+
+        try {
+            createDir();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
 
         if(file.exists())
             return file;
@@ -38,7 +51,7 @@ public class ImageService {
         String type = file.getOriginalFilename();
         type = type.substring(type.lastIndexOf("."));
 
-        String finalPath = "/images" + File.separator + item.getId() + type;
+        String finalPath = "images" + File.separator + item.getId() + type;
 
         File file1 = getFile(finalPath);
 
