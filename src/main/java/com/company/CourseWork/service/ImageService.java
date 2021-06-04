@@ -62,7 +62,7 @@ public class ImageService {
             return null;
         }
 
-        return finalPath;
+        return File.separator + finalPath;
     }
 
     public void deleteImage(Item item) {
