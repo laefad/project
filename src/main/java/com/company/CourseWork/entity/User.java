@@ -2,7 +2,6 @@ package com.company.CourseWork.entity;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.List;

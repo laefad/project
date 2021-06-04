@@ -13,7 +13,7 @@ spring :
     - "classpath:/static/"
     - "file:/app/external/"
   datasource :
-    url : jdbc:postgresql://localhost:7000/postgres
+    url : jdbc:postgresql://postgres:5432/postgres
     username : java
     password : java
     driver-class-name : org.postgresql.Driver

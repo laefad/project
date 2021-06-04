@@ -1,8 +1,34 @@
-version: "3.9"
+version: "3.4"
 
 services:
-  web:
+  app:
     build:
       context: .
-      dockerfile: docker/Dockerfile
       target: prod
+    image: app
+    container_name: app
+    ports:
+      - 8080:8080
+    depends_on:
+      - postgres
+    volumes:
+      - type: bind
+        source: ./../external
+        target: /app/external
+
+  postgres:
+    container_name: app_bd
+    image: postgres:my
+    build:
+      context: database/
+      dockerfile: Dockerfile
+    volumes:
+      - type: volume
+        source: db-source
+        target: /var/lib/postgresql/data
+    environment:
+      PGPASSWORD: 1561
+
+volumes:
+  db-source:
+    external: true
