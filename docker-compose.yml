@@ -28,6 +28,7 @@ services:
         target: /var/lib/postgresql/data
     environment:
       PGPASSWORD: 1561
+      POSTGRES_PASSWORD: 1561
 
 volumes:
   db-source:
