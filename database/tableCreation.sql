@@ -56,10 +56,11 @@ CREATE TABLE public.item
     path_to_image character varying(255),
     price double precision NOT NULL,
     CONSTRAINT item_pkey PRIMARY KEY (id)
-)
+);
 
 ALTER TABLE public.item
     OWNER to postgres;
+
 
 CREATE TABLE public.users
 (
@@ -68,7 +69,7 @@ CREATE TABLE public.users
     password character varying(255) NOT NULL,
     role character varying(255) NOT NULL,
     CONSTRAINT users_pkey PRIMARY KEY (login)
-)
+);
 
 ALTER TABLE public.users
     OWNER to postgres;
@@ -78,7 +79,7 @@ CREATE TABLE public.stock
     id bigint NOT NULL,
     name character varying(255) COLLATE pg_catalog."default",
     CONSTRAINT stock_pkey PRIMARY KEY (id)
-)
+);
 
 ALTER TABLE public.stock
     OWNER to postgres;
@@ -97,7 +98,7 @@ CREATE TABLE public.stock_items
         REFERENCES public.item (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
-)
+);
 
 ALTER TABLE public.stock_items
     OWNER to postgres;
@@ -108,7 +109,7 @@ CREATE TABLE public.orders
     order_status character varying(255) COLLATE pg_catalog."default" NOT NULL,
     order_name character varying(255) COLLATE pg_catalog."default",
     CONSTRAINT orders_pkey PRIMARY KEY (id)
-)
+);
 
 ALTER TABLE public.orders
     OWNER to postgres;
@@ -127,7 +128,7 @@ CREATE TABLE public.order_item
         REFERENCES public.stock (id) MATCH SIMPLE
         ON UPDATE CASCADE
         ON DELETE CASCADE
-)
+);
 
 ALTER TABLE public.order_item
     OWNER to postgres;
@@ -146,7 +147,7 @@ CREATE TABLE public.order_items
         REFERENCES public.orders (id) MATCH SIMPLE
         ON UPDATE CASCADE
         ON DELETE CASCADE
-)
+);
 
 ALTER TABLE public.order_items
     OWNER to postgres;
@@ -164,9 +165,9 @@ CREATE TABLE public.users_orders
         REFERENCES public.users (login) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE CASCADE
-)
+);
 
 ALTER TABLE public.users_orders
     OWNER to postgres;
 
-INSERT INTO users (login, mail_address, password, role) VALUES ('admin', null, 'admin', 'ADMIN')
+INSERT INTO public.users (login, mail_address, password, role) VALUES ('admin', null, 'admin', 'ADMIN')
