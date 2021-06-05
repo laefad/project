@@ -58,7 +58,7 @@ public class AccessController {
             return "redirect:/registration/?error=" + e.getMessage();
         }
 
-        return "redirect:/";
+        return "redirect:/login";
     }
 
 }
