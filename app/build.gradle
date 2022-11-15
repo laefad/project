@@ -1,0 +1,32 @@
+plugins {
+	id 'io.freefair.lombok'
+	id 'org.springframework.boot'
+	id 'io.spring.dependency-management'
+	id 'application'
+}
+
+repositories {
+	mavenCentral()
+	maven { 
+        url 'https://repo.spring.io/plugins-release' 
+    }
+}
+
+// https://mvnrepository.com/
+dependencies {
+	implementation 'org.projectlombok:lombok:1.18.24'
+
+	implementation 'org.springframework.boot:spring-boot-starter:2.7.5'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator:2.7.5'
+	implementation 'org.springframework.boot:spring-boot-starter-web:2.7.5'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf:2.7.5'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.7.5'
+	implementation 'org.springframework.boot:spring-boot-starter-security:2.7.5'
+
+	implementation 'org.postgresql:postgresql:42.5.0'
+}
+
+application {
+    // Define the main class for the application.
+    mainClass = 'practice4.App'
+}

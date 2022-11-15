@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Магазины</title>
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    <link rel="stylesheet" type="text/css" href="/css/stock.css">
+</head>
+<body>
+<nav>
+    <a href="/">Главная</a>
+    <a href="/stock">Магазины</a>
+    <a href="/item">Товары</a>
+
+    <div th:if="${user != null}">
+        <a href="/user/">Заказы</a>
+        <a href="/logout">Выйти</a>
+    </div>
+
+    <div th:if="${user == null}">
+        <a href="/login">Войти</a>
+        <a href="/registration">Регистрация</a>
+    </div>
+</nav>
+
+<div>
+
+    <form id="addStock"
+          method="post"
+          action="/stock/add"
+          th:if='${user != null && user.getRole().equals("ADMIN")}'>
+        <input name="name"
+               required
+               placeholder="Имя магазина">
+        <button type="submit">Добавить магазин</button>
+    </form>
+
+    <p th:if="${stocks.isEmpty()}">Магазинов нет</p>
+
+    <div class="market"
+         th:each="stock : ${stocks}"
+         th:if="${!stocks.isEmpty()}">
+
+        <div class="marketHeader">
+            <p>Магазин №
+                <span th:text="${stock.getId()}"></span>
+            </p>
+            <hr color="black" width="50%" size="1"
+                th:if="${stock.getName() != null}">
+            <p th:if="${stock.getName() != null}"
+               th:text="${stock.getName()}"></p>
+        </div>
+
+        <form method="post"
+              action="/stock/delete"
+              th:if='${user != null && user.getRole().equals("ADMIN")}'>
+            <input type="hidden"
+                   name="id"
+                   readonly
+                   th:value="${stock.getId()}">
+            <button type="submit">Удалить магазин</button>
+        </form>
+
+        <p th:if='${stock.getItems().isEmpty() && !(user != null && user.getRole().equals("ADMIN"))}'>
+            Магазин пуст
+        </p>
+
+        <form method="get"
+              action="/stock/get"
+              th:if='${!stock.getItems().isEmpty() || user != null && user.getRole().equals("ADMIN")}'>
+            <input type="hidden"
+                   name="id"
+                   readonly
+                   th:value="${stock.getId()}">
+            <button type="submit">Посмотреть магазин</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

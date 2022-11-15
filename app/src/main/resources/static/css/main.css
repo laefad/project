@@ -1,0 +1,111 @@
+body {
+    font-size: 18px;
+}
+
+body,
+button,
+#container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#container {
+    width: 60vw;
+    margin-left: 20vw;
+    margin-right: 20vw;
+}
+
+nav {
+    font-size: 24px;
+    width: 100vw;
+    min-height: 5vh;
+}
+
+nav > *, nav > div > * {
+    margin: 7px;
+}
+
+nav > div:first-child {
+    margin-left: 0px;
+}
+
+nav > div:last-child {
+    margin-right: 0px;
+}
+
+nav, nav > div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+a:link,
+a:visited {
+    color: black;
+    text-decoration: underline;
+}
+
+a:hover {
+    color: white;
+    background: gray;
+    text-decoration: none;
+}
+
+button,
+button:hover {
+    display: flex;
+    cursor: pointer;
+    border: 1px black solid;
+}
+
+button:hover {
+    color: white;
+    background-color: gray;
+}
+
+table {
+	border-collapse: collapse;
+	font-size: 18px;
+}
+
+td, th {
+	padding: 10px 0px 10px 0px;
+	min-width: min(20vw, 175px);
+	text-align: center;
+}
+
+td:not(:last-child),
+th:not(:last-child) {
+	border-right: 1px black solid;
+}
+
+td {
+	border-top: 1px black solid;
+}
+
+input {
+    border: 1px black solid;
+    outline: none;
+}
+
+input:focus,
+input:hover {
+    box-shadow: inset 0 0 15px lightblue;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+form > * {
+    margin: 3px;
+}
+
+.error {
+    color: red;
+}

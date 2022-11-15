@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Товары</title>
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    <link rel="stylesheet" type="text/css" href="/css/item.css">
+</head>
+<body>
+<nav>
+    <a href="/">Главная</a>
+    <a href="/stock">Магазины</a>
+    <a href="/item">Товары</a>
+
+    <div th:if="${user != null}">
+        <a href="/user/">Заказы</a>
+        <a href="/logout">Выйти</a>
+    </div>
+
+    <div th:if="${user == null}">
+        <a href="/login">Войти</a>
+        <a href="/registration">Регистрация</a>
+    </div>
+</nav>
+
+<div id="container">
+    <form method="post"
+          action="/item/create"
+          enctype="multipart/form-data"
+          th:if='${user != null && user.getRole().equals("ADMIN")}'>
+        <input name="name"
+               type="text"
+               required
+               placeholder="Имя товара">
+        <input name="price"
+               type="number"
+               required
+               placeholder="Цена товара">
+        <input name="description"
+               type="text"
+               placeholder="Описание товара">
+        <input name="image"
+               type="file"
+               accept="image/*"
+               alt="Изображение товара">
+        <button type="submit">Добавить товар</button>
+    </form>
+
+    <form method="get"
+          action="/item/get"
+          id="itemFinder">
+        <datalist id="itemList">
+            <option th:each="item : ${items}"
+                    th:value='${item.getId()}'
+                    th:text='${item.getName()}'></option>
+        </datalist>
+        <p>Введите id товара для просмотра: </p>
+        <input list="itemList"
+               type="text"
+               name="id"
+               placeholder="id товара">
+        <button type="submit">Перейти</button>
+    </form>
+
+    <div class="item"
+         th:each="item : ${items}"
+         th:if="${!items.isEmpty()}">
+        <div class="itemLeft">
+            <p>Товар №
+                <span th:text="${item.getId()}"></span>
+            </p>
+            <p th:text="${item.getName()}"></p>
+        </div>
+        <div class="itemRight">
+            <p th:text="${item.getDescription()}"></p>
+            <form method="get"
+                  action="/item/get">
+                <input type="hidden"
+                       name="id"
+                       readonly
+                       th:value="${item.getId()}">
+
+                <button type="submit">Просмотр товара</button>
+            </form>
+
+            <form method="post"
+                  action="/item/delete"
+                  th:if='${user != null && user.getRole().equals("ADMIN")}'>
+                <input type="hidden"
+                       readonly
+                       name="id"
+                       th:value="${item.getId()}">
+                <button type="submit">Удалить товар</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Авторизация</title>
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+</head>
+<body>
+<nav>
+    <a href="/">Главная</a>
+    <a href="/stock">Магазины</a>
+    <a href="/item">Товары</a>
+
+    <div th:if="${user != null}">
+        <a href="/user/">Заказы</a>
+        <a href="/logout">Выйти</a>
+    </div>
+
+    <div th:if="${user == null}">
+        <a href="/login">Войти</a>
+        <a href="/registration">Регистрация</a>
+    </div>
+</nav>
+<form action="/login" method="POST">
+    <h3>Авторизация</h3>
+    <input type="text" name="username" placeholder="Логин"/>
+    <input type="password" name="password" placeholder="Пароль"/>
+    <input type="submit" value="Войти"/>
+    <p th:if="${error}" class="error">Ошибка в введенных данных</p>
+</form>
+</body>
+</html>

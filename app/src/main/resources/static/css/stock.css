@@ -1,0 +1,16 @@
+.market,
+.marketHeader,
+ #addStock {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.market {
+    margin-top: 5vh;
+}
+
+.market p {
+    margin: 0px;
+}

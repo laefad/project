@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title th:text='${item.getName()}'></title>
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    <link rel="stylesheet" type="text/css" href="/css/item.css">
+</head>
+<body>
+<nav>
+    <a href="/">Главная</a>
+    <a href="/stock">Магазины</a>
+    <a href="/item">Товары</a>
+
+    <div th:if="${user != null}">
+        <a href="/user/">Заказы</a>
+        <a href="/logout">Выйти</a>
+    </div>
+
+    <div th:if="${user == null}">
+        <a href="/login">Войти</a>
+        <a href="/registration">Регистрация</a>
+    </div>
+</nav>
+<div class="item">
+    <div class="itemLeft">
+        <img th:src="${item.getPathToImage()}"/>
+    </div>
+
+    <div class="itemRight">
+
+    <p>Название:
+        <span th:text="${item.getName()}"></span>
+    </p>
+
+    <p>Описание:
+        <span th:text="${item.getDescription()}"></span>
+    </p>
+
+    <p>Цена:
+        <span th:text="${item.getPrice()}"></span>
+    </p>
+
+    <form method="post"
+          action="/item/delete"
+          th:if='${user != null && user.getRole().equals("ADMIN")}'>
+        <input type="hidden"
+               readonly
+               name="id"
+               th:value="${item.getId()}">
+        <button type="submit">Удалить товар</button>
+    </form>
+
+    <form method="post"
+          action="/stock/change"
+          th:if='${user != null && user.getRole().equals("ADMIN")}'>
+        <input type="hidden"
+               readonly
+               name="item_id"
+               th:value="${item.getId()}">
+        <input type="number"
+               name="amount"
+               step="1"
+               placeholder="Количество">
+        <input type="number"
+               name="stock_id"
+               list="stocks"
+               placeholder="id Магазина">
+        <datalist id="stocks">
+            <option th:each="stock : ${stocks}"
+                    th:value='${stock.getId()}'
+                    th:text='${stock.getName()}'></option>
+        </datalist>
+        <button type="submit">Добавить товар в магазин</button>
+    </form>
+    </div>
+</div>
+</body>
+</html>

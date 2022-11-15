@@ -1,0 +1,22 @@
+resources:
+  images:
+    path: "/app/external"
+
+
+
+spring:
+  application:
+    name: practice4
+  # resources:
+  #   static-locations:
+  #   - "classpath:/static/"
+  #   - "file:/Users/is-in/Desktop/Учеба/external/"
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOSTNAME}:${POSTGRES_PORT}/${POSTGRES_DB}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    # database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
