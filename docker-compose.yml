@@ -1,55 +1,100 @@
 version: '3.8'
 
 services:
+
+  app-db:
+    container_name: app-db
+    image: postgres:alpine
+    volumes:
+      - ./app_db/tableCreation.sql:/docker-entrypoint-initdb.d/tableCreation.sql
+      - app-db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: admin
+
   app:
+    container_name: app
     build:
       context: ./app
       target: prod
-    image: app
-    container_name: app
+    volumes:
+      - app-external:/app/external
+    environment:
+      JAVA_TOOL_OPTIONS: > 
+        -Dcom.sun.management.jmxremote.ssl=false 
+        -Dcom.sun.management.jmxremote.authenticate=false 
+        -Dcom.sun.management.jmxremote.port=5000 
+        -Dcom.sun.management.jmxremote.rmi.port=5000 
+        -Dcom.sun.management.jmxremote.host=0.0.0.0 
+        -Djava.rmi.server.hostname=192.168.10.1
+      POSTGRES_HOSTNAME: app-db
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: postgres
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+    depends_on:
+      - app-db
     ports:
       - 8080:8080
-    depends_on:
-      - postgres
-    volumes:
-      - type: volume
-        source: app-external
-        target: /app/external
+      - 5000:5000
+    networks:
+      - zabbix-monitoring
 
-  postgres:
-    container_name: app_bd
-    image: postgres:my
-    build:
-      context: database/
-      dockerfile: Dockerfile
+  # zabbix-agent: 
+  #   container_name: zabbix-agent
+  #   image: zabbix/zabbix-agent:alpine-6.2-latest
+
+  zabbix-db:
+    container_name: zabbix-db
+    image: postgres:alpine
     volumes:
-      - type: volume
-        source: db-source
-        target: /var/lib/postgresql/data
+      - zabbix-db-data:/var/lib/postgresql/data
     environment:
-      PGPASSWORD: admin
+      POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
+    networks:
+      - zabbix
 
-  # pgAdmin:
-  #   container_name: app_pgAdmin
-  #   image: dpage/pgadmin4
-  #   links:
-  #     - postgres
-  #   ports:
-  #     - 5050:80
-  #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: admin@admin.admin
-  #     PGADMIN_DEFAULT_PASSWORD: admin
-  #     PGADMIN_LISTEN_PORT: 80
-  #   volumes:
-  #     - type: volume
-  #       source: pg-admin
-  #       target: /var/lib/pgadmin
+  zabbix-server: 
+    container_name: zabbix-server
+    image: zabbix/zabbix-server-pgsql:alpine-6.2-latest
+    environment:
+      DB_SERVER_HOST: zabbix-db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      ZBX_DEBUGLEVEL: 3
+    depends_on:
+      - zabbix-db
+    # ports:
+    #   - 10051:10051
+    networks:
+      - zabbix
+
+  zabbix-web-interface:
+    container_name: zabbix-web-interface
+    image: zabbix/zabbix-web-nginx-pgsql:alpine-6.2-latest
+    environment:
+      ZBX_SERVER_HOST: zabbix-server
+      DB_SERVER_HOST: zabbix-db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    depends_on:
+      - zabbix-server
+      - zabbix-db
+    ports:
+      - 80:8080
+      - 443:8443
+    networks:
+      - zabbix
+      - zabbix-monitoring
+
+
+networks:
+  zabbix:
+    driver: bridge
+  zabbix-monitoring:
+    driver: bridge
 
 volumes:
-  db-source:
-    name: db-source
-  # pg-admin:
-  #   name: pg-admin
+  app-db-data:
   app-external:
-    name: app-external
+  zabbix-db-data:
