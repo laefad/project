@@ -44,10 +44,7 @@ services:
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
-      # POSTGRES_DB: postgres
-      # POSTGRES_HOST_AUTH_METHOD: trust
-      # POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
-  
+
   zabbix-java-gateway:
     container_name: zabbix-java-gateway
     image: zabbix/zabbix-java-gateway:alpine-6.2-latest
@@ -62,10 +59,6 @@ services:
       POSTGRES_PASSWORD: admin
       ZBX_JAVAGATEWAY_ENABLE: true
       ZBX_JAVAGATEWAY: zabbix-java-gateway
-      # ZBX_DEBUGLEVEL: 3
-      ZBX_VALUECACHESIZE: 64M
-      ZBX_CACHESIZE: 128M
-      ZBX_TRENDCACHESIZE: 128M
     depends_on:
       - zabbix-db
       - zabbix-java-gateway
