@@ -2,16 +2,25 @@
 
 Для запуска проекта необходимо выполнить команду в корне проекта:  
 
-    docker-compose up
+```sh
+docker-compose up
+```
 
-* По адресу http://localhost:8080/ -- сам магазин.
+* По адресу http://localhost:8080/ -- приложение
+* По адресу http://localhost:80/ -- zabbix
+* По адресу http://localhost:9090/ -- консоль Prometheus
+* По адресу http://localhost:3000/ -- консоль Graphana
 
-* По адресу http://localhost:5050/ -- pgAdmin для администрирования базы данных.
 
 Стандартные логин/пароль для администратора сайта : 
- - admin 
- - admin
+* admin 
+* admin
 
-Стандартные логин/пароль для администратора pgAdmin : 
- - admin@admin.admin
- - admin
+Стандартные логин/пароль для администратора zabbix : 
+* Admin
+* zabbix
+
+Стандартные логин/пароль для администратора Graphana : 
+* admin 
+* admin
+

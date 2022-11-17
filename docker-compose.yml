@@ -90,6 +90,33 @@ services:
       - 80:8080
     restart: unless-stopped
 
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+
+  postgres-exporter:
+    container_name: postgres-exporter
+    image: prometheuscommunity/postgres-exporter:latest
+    environment:
+      DATA_SOURCE_NAME: "postgresql://app:app@app-db:5432/postgres?sslmode=disable"
+    depends_on:
+      - app-db
+      - prometheus
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    volumes: 
+      - ./grafana/data:/var/lib/grafana/
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres-exporter
+
 volumes:
   app-db-data:
   app-external:
