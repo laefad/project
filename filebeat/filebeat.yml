@@ -1,0 +1,14 @@
+filebeat.config:
+  modules:
+    path: ${path.config}/modules.d/*.yml
+    reload.enabled: false
+
+filebeat.modules:
+  - module: postgresql
+    log:
+      enabled: true
+      var.paths: ["/var/app/log/*.csv*"]
+
+
+output.logstash:
+  hosts: ["graylog:5555"]

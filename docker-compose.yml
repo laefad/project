@@ -8,13 +8,16 @@ services:
     volumes:
       - ./app_db/tableCreation.sql:/docker-entrypoint-initdb.d/tableCreation.sql
       - app-db-data:/var/lib/postgresql/data
+      - ./app_db/logs:/logs
     environment:
       POSTGRES_PASSWORD: admin
-    # command: >
-    #   -c logging_collector=on
-    #   -c log_destination=syslog
-    #   -c syslog_facility=LOCAL0
-    #   -c log_statement=all
+    command: >
+      -c logging_collector=on
+      -c log_directory=/logs
+      -c log_filename=postgresql.log
+      -c log_destination=csvlog
+      -c log_statement=all
+
   app:
     container_name: app
     build:
@@ -153,6 +156,15 @@ services:
         limits:
           memory: 1g
 
+  graylog-filebeat:
+    container_name: graylog-filebeat
+    image: elastic/filebeat:8.5.1
+    entrypoint: filebeat -e -strict.perms=false
+    user: root
+    volumes:
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml
+      - ./app_db/logs:/var/app/log
+
   graylog:
     container_name: graylog
     image: graylog/graylog:4.3
@@ -165,11 +177,12 @@ services:
       - GRAYLOG_ELASTICSEARCH_HOSTS=http://graylog-elasticsearch:9200
       - GRAYLOG_MONGODB_URI=mongodb://graylog:graylog@graylog-mongo:27017/graylog
       - GRAYLOG_MESSAGE_JOURNAL_MAX_SIZE=128mb
-    entrypoint: /usr/bin/tini -- wait-for-it graylog-elasticsearch:9200 --  /docker-entrypoint.sh
+    entrypoint: /usr/bin/tini -- wait-for-it graylog-elasticsearch:9200 --  /docker-entrypoint.sh 
     restart: always
     depends_on:
       - graylog-mongo
       - graylog-elasticsearch
+      - graylog-filebeat
     ports:
       # Graylog web interface and REST API
       - 9000:9000
