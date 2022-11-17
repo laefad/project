@@ -10,7 +10,11 @@ services:
       - app-db-data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: admin
-
+    # command: >
+    #   -c logging_collector=on
+    #   -c log_destination=syslog
+    #   -c syslog_facility=LOCAL0
+    #   -c log_statement=all
   app:
     container_name: app
     build:
@@ -117,7 +121,73 @@ services:
     depends_on:
       - postgres-exporter
 
+  graylog-mongo:
+    container_name: graylog-mongo
+    image: bitnami/mongodb:latest
+    volumes:
+      - graylog-mongo-data:/bitnami/mongodb
+    environment:
+      - MONGODB_ROOT_PASSWORD=123
+      - MONGODB_USERNAME=graylog
+      - MONGODB_PASSWORD=graylog
+      - MONGODB_DATABASE=graylog
+  
+  graylog-elasticsearch:
+    container_name: graylog-elasticsearch
+    image: bitnami/elasticsearch:7.17.7
+    environment:
+      - http.host=0.0.0.0
+      - transport.host=localhost
+      - network.host=0.0.0.0
+      - xpack.security.enabled=false
+      - node.max_local_storage_nodes=3
+      - "ES_JAVA_OPTS=-Dlog4j2.formatMsgNoLookups=true -Xms512m -Xmx512m"
+      - bootstrap.memory_lock=true
+      - discovery.type=single-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+
+  graylog:
+    container_name: graylog
+    image: graylog/graylog:4.3
+    environment:
+      - GRAYLOG_PASSWORD_SECRET=somepasswordpepper
+      # Password: admin
+      - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
+      - GRAYLOG_HTTP_EXTERNAL_URI=http://127.0.0.1:9000/
+      - GRAYLOG_WEB_ENDPOINT_URI=http://127.0.0.1:9000/api
+      - GRAYLOG_ELASTICSEARCH_HOSTS=http://graylog-elasticsearch:9200
+      - GRAYLOG_MONGODB_URI=mongodb://graylog:graylog@graylog-mongo:27017/graylog
+      - GRAYLOG_MESSAGE_JOURNAL_MAX_SIZE=128mb
+    entrypoint: /usr/bin/tini -- wait-for-it graylog-elasticsearch:9200 --  /docker-entrypoint.sh
+    restart: always
+    depends_on:
+      - graylog-mongo
+      - graylog-elasticsearch
+    ports:
+      # Graylog web interface and REST API
+      - 9000:9000
+      # Syslog TCP
+      - 1514:1514
+      # Syslog UDP
+      - 1514:1514/udp
+      # GELF TCP
+      - 12201:12201
+      # GELF UDP
+      - 12201:12201/udp
+      # RAW TCP
+      - "5555:5555/tcp"
+      # RAW UDP
+      - "5555:5555/udp"
+
 volumes:
   app-db-data:
   app-external:
   zabbix-db-data:
+  graylog-mongo-data:

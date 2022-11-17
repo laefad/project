@@ -10,6 +10,7 @@ docker-compose up
 * По адресу http://localhost:80/ -- zabbix
 * По адресу http://localhost:9090/ -- консоль Prometheus
 * По адресу http://localhost:3000/ -- консоль Graphana
+* http://localhost:9000/ -- graylog
 
 
 Стандартные логин/пароль для администратора сайта : 
