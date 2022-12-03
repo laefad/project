@@ -38,6 +38,7 @@ out/
 
 ### logs ###
 *.log
+app_db/logs/*.csv
 
 ### gradle ###
 gradlew

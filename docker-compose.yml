@@ -130,10 +130,10 @@ services:
     volumes:
       - graylog-mongo-data:/bitnami/mongodb
     environment:
-      - MONGODB_ROOT_PASSWORD=123
-      - MONGODB_USERNAME=graylog
-      - MONGODB_PASSWORD=graylog
-      - MONGODB_DATABASE=graylog
+      MONGODB_ROOT_PASSWORD: 123
+      MONGODB_USERNAME: graylog
+      MONGODB_PASSWORD: graylog
+      MONGODB_DATABASE: graylog
   
   graylog-elasticsearch:
     container_name: graylog-elasticsearch
@@ -169,15 +169,21 @@ services:
     container_name: graylog
     image: graylog/graylog:4.3
     environment:
-      - GRAYLOG_PASSWORD_SECRET=somepasswordpepper
+      GRAYLOG_PASSWORD_SECRET: somepasswordpepper
       # Password: admin
-      - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
-      - GRAYLOG_HTTP_EXTERNAL_URI=http://127.0.0.1:9000/
-      - GRAYLOG_WEB_ENDPOINT_URI=http://127.0.0.1:9000/api
-      - GRAYLOG_ELASTICSEARCH_HOSTS=http://graylog-elasticsearch:9200
-      - GRAYLOG_MONGODB_URI=mongodb://graylog:graylog@graylog-mongo:27017/graylog
-      - GRAYLOG_MESSAGE_JOURNAL_MAX_SIZE=128mb
+      GRAYLOG_ROOT_PASSWORD_SHA2: 8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
+      GRAYLOG_HTTP_EXTERNAL_URI: http://127.0.0.1:9000/
+      GRAYLOG_WEB_ENDPOINT_URI: http://127.0.0.1:9000/api
+      GRAYLOG_ELASTICSEARCH_HOSTS: http://graylog-elasticsearch:9200
+      GRAYLOG_MONGODB_URI: mongodb://graylog:graylog@graylog-mongo:27017/graylog
+      GRAYLOG_MESSAGE_JOURNAL_MAX_SIZE: 128mb
+      # Content pack options
+      GRAYLOG_CONTENT_PACKS_AUTO_INSTALL: content-pack-a11181bd-ab8e-4a6b-8153-99452fe8a521-1.json
+      GRAYLOG_CONTENT_PACKS_DIR: data/contentpacks
+      GRAYLOG_CONTENT_PACKS_LOADER_ENABLED: true
     entrypoint: /usr/bin/tini -- wait-for-it graylog-elasticsearch:9200 --  /docker-entrypoint.sh 
+    volumes:
+      - ./graylog/contentpacks:/usr/share/graylog/data/contentpacks
     restart: always
     depends_on:
       - graylog-mongo
@@ -186,18 +192,6 @@ services:
     ports:
       # Graylog web interface and REST API
       - 9000:9000
-      # Syslog TCP
-      - 1514:1514
-      # Syslog UDP
-      - 1514:1514/udp
-      # GELF TCP
-      - 12201:12201
-      # GELF UDP
-      - 12201:12201/udp
-      # RAW TCP
-      - "5555:5555/tcp"
-      # RAW UDP
-      - "5555:5555/udp"
 
 volumes:
   app-db-data:

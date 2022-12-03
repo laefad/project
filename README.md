@@ -6,10 +6,11 @@
 docker-compose up
 ```
 
-* По адресу http://localhost:8080/ -- приложение
-* По адресу http://localhost:80/ -- zabbix
-* По адресу http://localhost:9090/ -- консоль Prometheus
-* По адресу http://localhost:3000/ -- консоль Graphana
+* http://localhost:8080/ -- приложение
+  * http://localhost:8080/export/logs -- выгрузка логов (в самом приложении ссылки нет)
+* http://localhost:80/ -- zabbix
+* http://localhost:9090/ -- консоль Prometheus
+* http://localhost:3000/ -- консоль Graphana
 * http://localhost:9000/ -- graylog
 
 
@@ -25,3 +26,6 @@ docker-compose up
 * admin 
 * admin
 
+Стандартные логин/пароль для администратора Graylog : 
+* admin 
+* admin
