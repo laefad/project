@@ -14,7 +14,7 @@ docker-compose up
 * http://localhost:9000/ -- graylog
 
 Дополнительные действия: 
-1. Зайти [в вкладку hosts внутри configuration](http://localhost/zabbix.php?action=host.list) и в правом верхем углу импортировать файл из `zabbix_server/zbx_export_hosts.yaml`. Обновление работоспособности хостов происходит каждую минуту. (Однако сам себя заббикс не видит, да и я без понятия может ли...)
+1. Зайти [в вкладку hosts внутри configuration](http://localhost/zabbix.php?action=host.list) и в правом верхем углу импортировать файл из `zabbix_server/zbx_export_hosts.yaml`. Обновление работоспособности хостов происходит каждую минуту. (стандартный хост Zabbix Server и не будет работать, его можно просто удалить)
 
 
 Стандартные логин/пароль для администратора сайта : 
