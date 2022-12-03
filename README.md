@@ -13,6 +13,9 @@ docker-compose up
 * http://localhost:3000/ -- консоль Graphana
 * http://localhost:9000/ -- graylog
 
+Дополнительные действия: 
+1. Зайти [в вкладку hosts внутри configuration](http://localhost/zabbix.php?action=host.list) и в правом верхем углу импортировать файл из `zabbix_server/zbx_export_hosts.yaml`. Обновление работоспособности хостов происходит каждую минуту. (Однако сам себя заббикс не видит, да и я без понятия может ли...)
+
 
 Стандартные логин/пароль для администратора сайта : 
 * admin 
